@@ -1,11 +1,14 @@
 from Admin import *
 from Members import *
 import mysql.connector as sqlcon
-#import pymysql as sqlcon
 
 
-mycon = sqlcon.connect(host="localhost", user="root", passwd="Kolkata@103",
-                       database="lib_mng_db")
+mycon = sqlcon.connect(
+    host="localhost",
+    user="root",
+    passwd="_password_to_access_MySQL_connection_of_host_to_use_to_create_the_database",
+    database="lib_mng_db",
+)
 
 if mycon.is_connected() is False:
     print("Error connecting to MySQL Database")
@@ -53,10 +56,13 @@ while True:
     elif command == "7":
         instructions()
     elif command == "8":
-        mycon.close()
         break
     else:
         print("the command you entered was not recognized")
+
+mycon.close()
+
+
 
 #########################################################################################
 #########################################################################################
