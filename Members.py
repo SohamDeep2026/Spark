@@ -1,5 +1,6 @@
 from random import randint
 
+
 # Issue a book
 def issue_book(c_user, c_book, c_user_book, mycon, data_book, data_user):
     check = True
@@ -21,11 +22,18 @@ def issue_book(c_user, c_book, c_user_book, mycon, data_book, data_user):
     if N_o_A_C < 1:
         check = False
     if check:
-        c_book.execute("update Books set Number_of_Available_Copies = {} where Book_ID = {}".format(N_o_A_C - 1, Bk_ID))
-        c_user_book.execute("insert into User_Books(Username, Book_ID, "
-                            "Issued_Date, Return_Date) values('{}', '{}', '{}', curdate(), null)".format(Username,
-                                                            Bk_ID))
+        c_book.execute(
+            "update Books set Number_of_Available_Copies = {} where Book_ID = {}".format(
+                N_o_A_C - 1, Bk_ID
+            )
+        )
+        c_user_book.execute(
+            "insert into User_Books(Username, Book_ID, Issued_Date, Return_Date) values('{}', '{}', '{}', curdate(), null)".format(
+                Username, Bk_ID
+            )
+        )
     mycon.commit()
+
 
 # Return a book
 def return_book(c_user, c_book, c_user_book, mycon, data_book, data_user):
@@ -44,11 +52,18 @@ def return_book(c_user, c_book, c_user_book, mycon, data_book, data_user):
     else:
         print("Incorrect book ID. Try again.")
         check = False
-    c_book.execute("update Books set Number_of_Available_Copies = {} where Book_ID = {"
-                   "}".format(N_o_A_C + 1, Bk_ID))
-    c_user_book.execute("update User_Books set Return_Date = curdate() where Book_ID = "
-                        "{} and Username = '{}'".format(Bk_ID, Username))
+    c_book.execute(
+        "update Books set Number_of_Available_Copies = {} where Book_ID = {}".format(
+            N_o_A_C + 1, Bk_ID
+        )
+    )
+    c_user_book.execute(
+        "update User_Books set Return_Date = curdate() where Book_ID = {} and Username = '{}'".format(
+            Bk_ID, Username
+        )
+    )
     mycon.commit()
+
 
 # View Book Details
 def display_book(data_book):
