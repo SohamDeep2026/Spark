@@ -15,16 +15,16 @@ CREATE TABLE User_Details
 DROP table if exists Books;
 CREATE TABLE Books
 (	Book_ID	integer primary key,
-	Book_Title	varchar(30)	not null,
-    Author_Name	varchar(30),
-	Genre	varchar(20),
+	Book_Title	varchar(100)	not null,
+    Author_Name	varchar(100),
+	Genre	varchar(50),
     Number_of_Copies	integer	not null	default(0),
     Number_of_Available_Copies	integer	not null	default(0)
 );
 
 DROP table if exists User_Books;
 CREATE TABLE User_Books
-(	User_Book_ID	integer default(100)    auto_increment    primary key,
+(	User_Book_ID	integer   auto_increment    primary key,
 	Username	varchar(30)	not null references User_Details(Username),
     Book_ID	integer not null references Books(Book_ID),
 	Issued_Date	date	not null,
@@ -35,3 +35,4 @@ insert into User_Details(Username, U_Name, About, U_Type, Date_of_Joining, U_Pas
 values("Admin001", "Shanta Mukherjee", "Head Librarian", 
 "Admin", curdate(), "HopscotchLib");
 
+alter table User_Books auto_increment = 100;

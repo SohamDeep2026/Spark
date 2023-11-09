@@ -1,12 +1,16 @@
 from Admin import *
 from Members import *
 import mysql.connector as sqlcon
+from click import clear
+import datetime
+import time
 
+USER = {}
 
 mycon = sqlcon.connect(
     host="localhost",
-    user="root",
-    passwd="_password_to_access_MySQL_connection_of_host_to_use_to_create_the_database",
+    user="shuvam",
+    passwd="guikJBVhjjhb102!?",
     database="lib_mng_db",
 )
 
@@ -23,6 +27,84 @@ c_user_book = mycon.cursor()
 c_user_book.execute("select * from User_Books")
 data_user_book = c_user_book.fetchall()
 
+users = { i[0]: [i[1], i[3], i[-1]] for i in data_user }
+
+# login register code
+
+print(users)
+
+clear()
+
+while True:
+
+    print('''Login
+Register
+        
+['L' for login, 'R' for register]\n''')
+
+    lr = input()
+
+    if lr.upper() == "L":
+        
+        in_uname = input("Enter your username: ")
+        in_pass = input("Enter your password: ")
+
+        if in_uname in users:
+            if users[in_uname][1] == in_pass:
+                USER = {
+                    "username": in_uname,
+                    "name": users[in_uname][0],
+                    "type": users[in_uname][1]
+                }
+        
+        if USER == {}: continue
+        else:
+            if USER.type == "Admin":
+                print(f'Successfully logged in as Admin {USER.name}') 
+            else:
+                print(f'Successfully logged in as Member {USER.name}')
+            break
+
+    elif lr.upper() == "R":
+        in_uname = input("Choose your username: ")
+        in_name = input("Enter your name: ")
+        in_about = input("Enter a short description about yourself: ")
+        in_pass = input("Choose your password: ")
+        in_confirmpass = input("Confirm your password: ")
+
+        issue = ""
+
+        if in_pass == in_confirmpass:
+            if not in_uname in users:
+                USER = {
+                    "username": in_uname,
+                    "name": in_name,
+                    "type": "Member"
+                }
+                now = datetime.datetime.now()
+                reg_user = mycon.cursor()
+
+                try:
+                    reg_user.execute(f'''insert into User_Details (Username, U_Name, About, U_Type, U_Password) 
+values ('{in_uname}', '{in_name}', '{in_about}', 'Member', '{in_pass}')''')
+                    mycon.commit()
+                except:
+                    mycon.rollback()
+                    USER = {}
+                    issue = "ERROR: Changes couldn't be save. Try again later."
+
+
+            else:
+                issue = "ERROR: Username already taken"
+        else:
+            issue = "ERROR: Passwords do not match"
+
+        if USER == {}: continue
+        else:
+            time.sleep(1)
+            print(f'Successfully logged in as Member {USER["name"]}')
+            break
+
 
 def instructions():
     print("Instructions(Select the option number)")
@@ -36,29 +118,30 @@ def instructions():
     print("8) Exit")
 
 
-instructions()
+# instructions()
 
-while True:
-    command = input("Enter your choice")
+# while True:
 
-    if command == "1":
-        add_user(c_user, c_book, c_user_book, mycon)
-    elif command == "2":
-        add_book(c_user, c_book, c_user_book, mycon)
-    elif command == "3":
-        update_book(c_user, c_book, c_user_book, mycon, data_book)
-    elif command == "4":
-        issue_book(c_user, c_book, c_user_book, mycon, data_book, data_user)
-    elif command == "5":
-        return_book(c_user, c_book, c_user_book, mycon, data_book, data_user)
-    elif command == "6":
-        display_book(data_book)
-    elif command == "7":
-        instructions()
-    elif command == "8":
-        break
-    else:
-        print("the command you entered was not recognized")
+#     command = input("Enter your choice")
+
+#     if command == "1":
+#         add_user(c_user, c_book, c_user_book, mycon)
+#     elif command == "2":
+#         add_book(c_user, c_book, c_user_book, mycon)
+#     elif command == "3":
+#         update_book(c_user, c_book, c_user_book, mycon, data_book)
+#     elif command == "4":
+#         issue_book(c_user, c_book, c_user_book, mycon, data_book, data_user)
+#     elif command == "5":
+#         return_book(c_user, c_book, c_user_book, mycon, data_book, data_user)
+#     elif command == "6":
+#         display_book(data_book)
+#     elif command == "7":
+#         instructions()
+#     elif command == "8":
+#         break
+#     else:
+#         print("the command you entered was not recognized")
 
 mycon.close()
 
