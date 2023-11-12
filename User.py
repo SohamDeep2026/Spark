@@ -1,9 +1,14 @@
+# utility modules
+import time
+import datetime
+from click import clear
+
+# command modules
 from Admin import *
 from Members import *
+
+# sql connector module 
 import mysql.connector as sqlcon
-from click import clear
-import datetime
-import time
 
 USER = {}
 
@@ -27,15 +32,14 @@ c_user_book = mycon.cursor()
 c_user_book.execute("select * from User_Books")
 data_user_book = c_user_book.fetchall()
 
-users = { i[0]: [i[1], i[3], i[-1]] for i in data_user }
+users = { i[0]: [i[1], i[3], i[-1]] for i in data_user } # dictionary of user data. key is username, value is list of name, type, password
+
 
 # login register code
 
-print(users)
-
-clear()
-
 while True:
+
+    clear()
 
     print('''Login
 Register
@@ -50,19 +54,22 @@ Register
         in_pass = input("Enter your password: ")
 
         if in_uname in users:
-            if users[in_uname][1] == in_pass:
+            if users[in_uname][2] == in_pass:
                 USER = {
                     "username": in_uname,
                     "name": users[in_uname][0],
                     "type": users[in_uname][1]
                 }
         
-        if USER == {}: continue
+        if USER == {}: 
+            print("\nERROR: Incorrect Credentials")
+            time.sleep(2)
+            continue
         else:
-            if USER.type == "Admin":
-                print(f'Successfully logged in as Admin {USER.name}') 
+            if USER['type'] == "Admin":
+                print(f'Successfully logged in as Admin { USER["name"] }')
             else:
-                print(f'Successfully logged in as Member {USER.name}')
+                print(f'Successfully logged in as Member { USER["name"] }')
             break
 
     elif lr.upper() == "R":
@@ -99,23 +106,68 @@ values ('{in_uname}', '{in_name}', '{in_about}', 'Member', '{in_pass}')''')
         else:
             issue = "ERROR: Passwords do not match"
 
-        if USER == {}: continue
+        if USER == {}: 
+            print("\n" + issue)
+            time.sleep(2)
+            continue
         else:
             time.sleep(1)
             print(f'Successfully logged in as Member {USER["name"]}')
             break
 
+# at the end of this loop the user is logged in 
 
-def instructions():
-    print("Instructions(Select the option number)")
-    print("1) Add users - (admin)")
-    print("2) Add books - (admin)")
-    print("3) Update book details - (admin)")
-    print("4) Issue a book - (member)")
-    print("5) Return a book - (member)")
-    print("6) Display book details - (admin & member)")
-    print("7) Help")
-    print("8) Exit")
+
+# list of instructions 
+instructions = [
+    ["Add users", "Admin"],
+    ["Add books", "Admin"],
+    ["Update book details", "Admin"],
+    ["Issue a book", "Member"],
+    ["Return a book", "Member"],
+    ["Display book details", "AdminMember"],
+    # ["Help", "AdminMember"], removed help command, was redundant
+    ["Exit", "AdminMember"]
+]
+
+# this list consists of all the commands the logged in user can execute
+valid_instructions = {}
+j = 1
+for i in instructions:
+    if USER["type"] in i[1]:
+        valid_instructions[str(j)] = i[0]
+        j += 1
+
+# this is the loop which allows us to execute commands
+while True:
+    for i in valid_instructions:
+        print(f'{i} > {valid_instructions[i]}')
+    print('\n[Enter respective numbers to execute commands]')
+    command = input()
+
+    if valid_instructions[command]:
+        cmd = valid_instructions[command]
+        if cmd == "Add users":
+            add_user(c_user, c_book, c_user_book, mycon)
+        elif cmd == "Add books":
+            add_book(c_user, c_book, c_user_book, mycon)
+        elif cmd == "Update book details":
+            update_book(c_user, c_book, c_user_book, mycon, data_book)
+        elif cmd == "Issue a book":
+            issue_book(c_user, c_book, c_user_book, mycon, data_book, data_user)
+        elif cmd == "Return a book":
+            return_book(c_user, c_book, c_user_book, mycon, data_book, data_user)
+        elif cmd == "Display book details":
+            display_book(data_book)
+        elif cmd == "Exit":
+            break
+        else:
+            print("ERROR: Invalid command")
+            time.sleep(2)
+    
+
+
+mycon.close()
 
 
 # instructions()
@@ -143,7 +195,6 @@ def instructions():
 #     else:
 #         print("the command you entered was not recognized")
 
-mycon.close()
 
 
 
