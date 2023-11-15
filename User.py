@@ -115,6 +115,8 @@ values ('{in_uname}', '{in_name}', '{in_about}', 'Member', '{in_pass}')''')
             print(f'Successfully logged in as Member {USER["name"]}')
             break
 
+clear()
+
 # at the end of this loop the user is logged in 
 
 
@@ -140,6 +142,7 @@ for i in instructions:
 
 # this is the loop which allows us to execute commands
 while True:
+
     for i in valid_instructions:
         print(f'{i} > {valid_instructions[i]}')
     print('\n[Enter respective numbers to execute commands]')
@@ -158,6 +161,9 @@ while True:
         elif cmd == "Return a book":
             return_book(c_user, c_book, c_user_book, mycon, data_book, data_user)
         elif cmd == "Display book details":
+            c_book = mycon.cursor()
+            c_book.execute("select * from Books")
+            data_book = c_book.fetchall()
             display_book(data_book)
         elif cmd == "Exit":
             break
@@ -165,6 +171,7 @@ while True:
             print("ERROR: Invalid command")
             time.sleep(2)
     
+    print("\n")
 
 
 mycon.close()
