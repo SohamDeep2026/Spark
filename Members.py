@@ -1,6 +1,3 @@
-from random import randint
-
-
 # Issue a book
 def issue_book(c_user, c_book, c_user_book, mycon, data_book, data_user):
     check = True
