@@ -1,3 +1,5 @@
+from tabulate import tabulate
+
 # Add a member
 def add_user(c_user, c_book, c_user_book, mycon):
     Username = input("Enter username")
@@ -76,5 +78,19 @@ def update_book(c_user, c_book, c_user_book, mycon, data_book):
 
 # View Book Details
 def display_book(data_book):
-    for i in data_book:
-        print(i)
+    data_book.insert(0, ["BookID", "Book Title", "Book Author", "Genre", "Total Copies", "Available Copies"])
+    print_table(data_book)
+
+a = (1, 'Concepts of Physics', 'HC Verma', 'Physics', 9, 9)
+
+head = ["BookID", "Book Title", "Book Author", "Genre", "Copies", "Available Copies"]
+
+def print_table(table):
+    # Assuming the first list is the heading row
+    headings = table[0]
+    data = table[1:]
+
+    # Use the 'tabulate' function to format the table
+    table_str = tabulate(data, headers=headings, tablefmt="grid")
+
+    print(table_str)
