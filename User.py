@@ -7,33 +7,35 @@ from click import clear
 from Admin import *
 from Members import *
 
-# sql connector module 
+# sql connector module
 import mysql.connector as sqlcon
+mycon = sqlcon.connect(host='localhost', user='root', passwd='Kolkata@103',
+                       database='lib_mng_db')
 
-USER = {}
+data_user = data_book = data_user_book = c_user = c_book = c_user_book = None
 
-mycon = sqlcon.connect(
-    host="localhost",
-    user="shuvam",
-    passwd="guikJBVhjjhb102!?",
-    database="lib_mng_db",
-)
+def idiot():
+    global data_user
+    global data_book
+    global data_user_book
+    global c_user
+    global c_book
+    global c_user_book
+    c_user = mycon.cursor()
+    c_user.execute("select * from User_Details")
+    data_user = c_user.fetchall()
+    c_book = mycon.cursor()
+    c_book.execute("select * from Books")
+    data_book = c_book.fetchall()
+    c_user_book = mycon.cursor()
+    c_user_book.execute("select * from User_Books")
+    data_user_book = c_user_book.fetchall()
 
-if mycon.is_connected() is False:
-    print("Error connecting to MySQL Database")
+idiot()
 
-c_user = mycon.cursor()
-c_user.execute("select * from User_Details")
-data_user = c_user.fetchall()
-c_book = mycon.cursor()
-c_book.execute("select * from Books")
-data_book = c_book.fetchall()
-c_user_book = mycon.cursor()
-c_user_book.execute("select * from User_Books")
-data_user_book = c_user_book.fetchall()
-
-users = { i[0]: [i[1], i[3], i[-1]] for i in data_user } # dictionary of user data. key is username, value is list of name, type, password
-
+users = {i[0]: [i[1], i[3], i[-1]] for i in
+         data_user}  # dictionary of user data. key is username, value is list of name,
+# type, password
 
 # login register code
 
@@ -41,15 +43,17 @@ while True:
 
     clear()
 
-    print('''Login
+    print(
+        '''Login
 Register
-        
-['L' for login, 'R' for register]\n''')
+
+['L' for login, 'R' for register]\n'''
+        )
 
     lr = input()
 
     if lr.upper() == "L":
-        
+
         in_uname = input("Enter your username: ")
         in_pass = input("Enter your password: ")
 
@@ -59,17 +63,17 @@ Register
                     "username": in_uname,
                     "name": users[in_uname][0],
                     "type": users[in_uname][1]
-                }
-        
-        if USER == {}: 
+                    }
+
+        if USER == {}:
             print("\nERROR: Incorrect Credentials")
             time.sleep(2)
             continue
         else:
             if USER['type'] == "Admin":
-                print(f'Successfully logged in as Admin { USER["name"] }')
+                print(f'Successfully logged in as Admin {USER["name"]}')
             else:
-                print(f'Successfully logged in as Member { USER["name"] }')
+                print(f'Successfully logged in as Member {USER["name"]}')
             break
 
     elif lr.upper() == "R":
@@ -87,13 +91,16 @@ Register
                     "username": in_uname,
                     "name": in_name,
                     "type": "Member"
-                }
+                    }
                 now = datetime.datetime.now()
                 reg_user = mycon.cursor()
 
                 try:
-                    reg_user.execute(f'''insert into User_Details (Username, U_Name, About, U_Type, U_Password) 
-values ('{in_uname}', '{in_name}', '{in_about}', 'Member', '{in_pass}')''')
+                    reg_user.execute(
+                        f'''insert into User_Details (Username, U_Name, About, U_Type, 
+                        U_Password) 
+values ('{in_uname}', '{in_name}', '{in_about}', 'Member', '{in_pass}')'''
+                        )
                     mycon.commit()
                 except:
                     mycon.rollback()
@@ -106,7 +113,7 @@ values ('{in_uname}', '{in_name}', '{in_about}', 'Member', '{in_pass}')''')
         else:
             issue = "ERROR: Passwords do not match"
 
-        if USER == {}: 
+        if USER == {}:
             print("\n" + issue)
             time.sleep(2)
             continue
@@ -115,10 +122,10 @@ values ('{in_uname}', '{in_name}', '{in_about}', 'Member', '{in_pass}')''')
             print(f'Successfully logged in as Member {USER["name"]}')
             break
 
-# at the end of this loop the user is logged in 
+# at the end of this loop the user is logged in
 
 
-# list of instructions 
+# list of instructions
 instructions = [
     ["Add users", "Admin"],
     ["Add books", "Admin"],
@@ -128,7 +135,7 @@ instructions = [
     ["Display book details", "AdminMember"],
     # ["Help", "AdminMember"], removed help command, was redundant
     ["Exit", "AdminMember"]
-]
+    ]
 
 # this list consists of all the commands the logged in user can execute
 valid_instructions = {}
@@ -147,6 +154,7 @@ while True:
 
     if valid_instructions[command]:
         cmd = valid_instructions[command]
+        idiot()
         if cmd == "Add users":
             add_user(c_user, c_book, c_user_book, mycon)
         elif cmd == "Add books":
@@ -164,11 +172,8 @@ while True:
         else:
             print("ERROR: Invalid command")
             time.sleep(2)
-    
-
 
 mycon.close()
-
 
 # instructions()
 
@@ -194,8 +199,6 @@ mycon.close()
 #         break
 #     else:
 #         print("the command you entered was not recognized")
-
-
 
 
 #########################################################################################
