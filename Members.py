@@ -28,7 +28,7 @@ def issue_book(c_user, c_book, c_user_book, mycon, data_book, data_user):
             )
         )
         c_user_book.execute(
-            "insert into User_Books(Username, Book_ID, Issued_Date, Return_Date) values('{}', '{}', '{}', curdate(), null)".format(
+            "insert into User_Books(Username, Book_ID, Issued_Date, Return_Date) values('{}', {}, curdate(), null)".format(
                 Username, Bk_ID
             )
         )
