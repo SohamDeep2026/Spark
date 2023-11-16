@@ -33,14 +33,11 @@ def idiot():
 idiot()
 
 users = {i[0]: [i[1], i[3], i[-1]] for i in
-         data_user}  # dictionary of user data. key is username, value is list of name,
-# type, password
-
-# login register code
+         data_user}  
 
 while True:
 
-    clear()
+    # clear()
 
     print(
         '''Login
@@ -123,10 +120,7 @@ values ('{in_uname}', '{in_name}', '{in_about}', 'Member', '{in_pass}')'''
 
 clear()
 
-# at the end of this loop the user is logged in 
 
-
-# list of instructions
 instructions = [
     ["Add users", "Admin"],
     ["Add books", "Admin"],
@@ -134,7 +128,6 @@ instructions = [
     ["Issue a book", "Member"],
     ["Return a book", "Member"],
     ["Display book details", "AdminMember"],
-    # ["Help", "AdminMember"], removed help command, was redundant
     ["Exit", "AdminMember"]
     ]
 
@@ -179,6 +172,4 @@ while True:
             time.sleep(2)
     
     print("\n")
-
-
 mycon.close()

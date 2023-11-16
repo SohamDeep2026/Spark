@@ -3,11 +3,10 @@ from tabulate import tabulate
 # Issue a book
 def issue_book(c_user, c_book, c_user_book, mycon, data_book, data_user):
     check = True
-    Username = input("Enter username.")
-    Bk_ID = int(input("Enter book ID of book to issue."))
+    Username = input("Enter username: ")
+    Bk_ID = int(input("Enter book ID of book to issue: "))
     for i in data_user:
-        if i[0] == Username:
-            break
+        if i[0] == Username: break
     else:
         print("Incorrect username. Try again.")
         check = False
@@ -27,7 +26,8 @@ def issue_book(c_user, c_book, c_user_book, mycon, data_book, data_user):
             )
         )
         c_user_book.execute(
-            "insert into User_Books(Username, Book_ID, Issued_Date, Return_Date) values('{}', {}, curdate(), null)".format(
+            "insert into User_Books(Username, Book_ID, Issued_Date, Return_Date) values('{}', {}, curdate(), null)"
+            .format(
                 Username, Bk_ID
             )
         )
@@ -36,8 +36,8 @@ def issue_book(c_user, c_book, c_user_book, mycon, data_book, data_user):
 
 # Return a book
 def return_book(c_user, c_book, c_user_book, mycon, data_book, data_user):
-    Bk_ID = int(input("Enter book ID of the book that you want to return."))
-    Username = input("Enter your username.")
+    Username = input("Enter your username: ")
+    Bk_ID = int(input("Enter book ID of the book that you want to return: "))
     for i in data_user:
         if i[0] == Username:
             break
@@ -69,16 +69,10 @@ def display_book(data_book):
     data_book.insert(0, ["BookID", "Book Title", "Book Author", "Genre", "Total Copies", "Available Copies"])
     print_table(data_book)
 
-a = (1, 'Concepts of Physics', 'HC Verma', 'Physics', 9, 9)
-
-head = ["BookID", "Book Title", "Book Author", "Genre", "Copies", "Available Copies"]
-
 def print_table(table):
-    # Assuming the first list is the heading row
     headings = table[0]
     data = table[1:]
 
-    # Use the 'tabulate' function to format the table
     table_str = tabulate(data, headers=headings, tablefmt="grid")
 
     print(table_str)
