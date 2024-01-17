@@ -13,6 +13,8 @@ mycon = sqlcon.connect(host='localhost', user='root', passwd='', database='lib_m
 
 data_user = data_book = data_user_book = c_user = c_book = c_user_book = None
 
+USER = {}
+
 def idiot():
     global data_user
     global data_book
@@ -89,6 +91,7 @@ Register
                     "type": "Member"
                     }
                 now = datetime.datetime.now()
+                
                 reg_user = mycon.cursor()
 
                 try:
